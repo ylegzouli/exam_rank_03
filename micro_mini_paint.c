@@ -5,11 +5,12 @@
 
 int         get_zone(FILE *file, t_zone *zone, char **draw);
 int			get_form(FILE *file, t_zone *zone, char **draw);
-void		ft_print(char *draw);
-
 int			draw_form(t_zone *zone, char **draw, t_draw *info);
+void		ft_print(char *draw);
 int			is_in_rec();
 //int		is_in_cir();
+
+//______________________________________________________________________//
 
 typedef struct	s_zone
 {
