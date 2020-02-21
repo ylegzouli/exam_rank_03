@@ -10,30 +10,30 @@ typedef struct	s_zone
 	char	back;
 }				t_zone;
 
-typedef struct	s_draw
-{
-	char	type;
-	float	x;
-	float	y;
-	float	wi;
-	float	he;
-	char	c;
-}				t_draw;
-
 //typedef struct	s_draw
 //{
 //	char	type;
 //	float	x;
 //	float	y;
-//	float	rad;
+//	float	wi;
+//	float	he;
 //	char	c;
-//}					t_draw;
+//}				t_draw;
+
+typedef struct	s_draw
+{
+	char	type;
+	float	x;
+	float	y;
+	float	rad;
+	char	c;
+}					t_draw;
 
 int         get_zone(FILE *file, t_zone *zone, char **draw);
 int         get_form(FILE *file, t_zone *zone, char **draw);
 void		draw_form(t_zone *zone, char **draw, t_draw *info);
-int         is_in_rec(float x, float y, t_draw *info);
-//int       is_in_cir(float x, float y, t_draw *info);
+//int         is_in_rec(float x, float y, t_draw *info);
+int			is_in_cer(float x, float y, t_draw *info);
 void        ft_print(char *draw, t_zone *zone);
 
 //______________________________________________________________________//
@@ -46,9 +46,9 @@ int			get_zone(FILE *file, t_zone *zone, char **draw)
 	if (fscanf(file, "%d %d %c\n",  &zone->width, &zone->height, &zone->back) != 3)
 		return (0);
 	if (zone->width <= 0 || zone->width > 300 || zone->height <= 0 || zone->height > 300)
-        return (0);
+		return (0);
 	if (!(*draw = (char *)malloc(sizeof(char) * (zone->height * zone->width))))
-        return (0);
+		return (0);
 	while (i < zone->height * zone->width)
 	{	
 		(*draw)[i] = zone->back;
@@ -62,11 +62,11 @@ int			get_form(FILE *file, t_zone *zone, char **draw)
 	int		ret;
 	t_draw	info;
 	
-//	while ((ret = fscanf(file, "%c %f %f %f %c\n", &info.type, &info.x, &info.y, &info.rad, &info.c) == 5))
-	while ((ret = fscanf(file, "%c %f %f %f %f %c\n", &info.type, &info.x, &info.y, &info.wi, &info.he, &info.c) == 6))
+//	while ((ret = fscanf(file, "%c %f %f %f %f %c\n", &info.type, &info.x, &info.y, &info.wi, &info.he, &info.c) == 6))
+	while ((ret = fscanf(file, "%c %f %f %f %c\n", &info.type, &info.x, &info.y, &info.rad, &info.c) == 5))
 	{
-//		if (info.rad <= 0.000000000 || (info.type != 'c' && info.type != 'C'))
-		if (info.wi <= 0.000000000 || info.he <= 0.000000000 || (info.type != 'r' && info.type != 'R'))
+//		if (info.wi <= 0.000000000 || info.he <= 0.000000000 || (info.type != 'r' && info.type != 'R'))
+		if (info.rad <= 0.000000000 || (info.type != 'c' && info.type != 'C'))
 			return (0);
 		draw_form(zone, draw, &info);
 	}
@@ -102,17 +102,17 @@ void		draw_form(t_zone *zone, char **draw, t_draw *info)
 		x = 0;
 		while (x < zone->width)
 		{
-//			in = is_in_cer((float)x, (float)y, info);
-			in = is_in_rec((float)x, (float)y, info);
-//			if ((info->type == 'c' && in == 2) || (info->type == 'C' && in))
-			if ((info->type == 'r' && in == 2) || (info->type == 'R' && in))
+//			in = is_in_rec((float)x, (float)y, info);
+			in = is_in_cer((float)x, (float)y, info);
+//			if ((info->type == 'r' && in == 2) || (info->type == 'R' && in))
+			if ((info->type == 'c' && in == 2) || (info->type == 'C' && in))
 				(*draw)[(y * zone->width) + x] = info->c;
 			x++;
 		}
 		y++;
 	}
 }
-
+/*
 int			is_in_rec(float x, float y, t_draw *info)
 {
 	if (x < info->x || info->x + info->wi < x ||
@@ -123,20 +123,20 @@ int			is_in_rec(float x, float y, t_draw *info)
 		return (2);
 	return (1);
 }
+*/
+int			is_in_cer(float x, float y, t_draw *info)
+{
+	float	dist;
 
-//int			is_in_cir(float x, float y, t_draw *info)
-//{
-//	float	dist;
-
-//	dist = sqrt(powf(x - info->x, 2.) + powf(y - info->y, 2.));
-//	if (dist < info->rad)
-//	{
-//		if (info->rad - dist < 1.00000000)
-//			return (2);
-//		return (1);
-//	}
-//	return (0);
-//}
+	dist = sqrt(powf(x - info->x, 2.) + powf(y - info->y, 2.));
+	if (dist < info->rad)
+	{
+		if (info->rad - dist < 1.00000000)
+			return (2);
+		return (1);
+	}
+	return (0);
+}
 
 //______________________________________________________________________//
 
